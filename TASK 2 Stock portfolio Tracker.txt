@@ -1,0 +1,65 @@
+	TASK 2 Stock portfolio Tracker
+
+import os
+
+def stock_portfolio_tracker():
+    # Predefined stock prices dictionary
+    stock_prices = {
+        "AAPL": 180,
+        "TSLA": 250,
+        "GOOGL": 150,
+        "AMZN": 175,
+        "MSFT": 400
+    }
+    
+    portfolio = {}
+    print("--- Stock Portfolio Tracker ---")
+    print("Available stocks to track:", list(stock_prices.keys()))
+    
+    # Loop to get user input
+    while True:
+        symbol = input("\nEnter stock symbol (or type 'done' to finish): ").upper().strip()
+        if symbol == 'DONE':
+            break
+            
+        if symbol not in stock_prices:
+            print("Sorry, that stock price is not hardcoded. Try AAPL, TSLA, GOOGL, AMZN, or MSFT.")
+            continue
+            
+        try:
+            quantity = int(input(f"Enter number of shares for {symbol}: "))
+            if quantity < 0:
+                print("Quantity cannot be negative.")
+                continue
+            # Accumulate shares if they type the same stock again
+            portfolio[symbol] = portfolio.get(symbol, 0) + quantity
+        except ValueError:
+            print("Invalid input. Please enter a valid whole number for shares.")
+
+    # Calculate total value and format output
+    print("\n--- Portfolio Summary ---")
+    summary_lines = ["--- Stock Portfolio Summary ---\n"]
+    total_portfolio_value = 0
+    
+    for symbol, quantity in portfolio.items():
+        price = stock_prices[symbol]
+        total_cost = quantity * price
+        total_portfolio_value += total_cost
+        line = f"{symbol}: {quantity} shares @ ${price} each = ${total_cost}"
+        print(line)
+        summary_lines.append(line + "\n")
+        
+    total_line = f"\nTotal Investment Value: ${total_portfolio_value}"
+    print(total_line)
+    summary_lines.append(total_line)
+    
+    # File handling: Save results to a file
+    save_choice = input("\nDo you want to save this summary to a .txt file? (yes/no): ").lower().strip()
+    if save_choice == 'yes' or save_choice == 'y':
+        filename = "portfolio_summary.txt"
+        with open(filename, "w") as file:
+            file.writelines(summary_lines)
+        print(f"Success! Portfolio saved to '{os.path.abspath(filename)}'")
+
+if __name__ == "__main__":
+    stock_portfolio_tracker()
